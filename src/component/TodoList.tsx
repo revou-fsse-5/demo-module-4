@@ -10,27 +10,26 @@ interface Todo {
 }
 
 const TodoList: React.FC = () => {
-  // State to store the list of todos
   const [todos, setTodos] = useState<Todo[]>([]);
-  // State to store the title of the new todo item
   const [newTodoTitle, setNewTodoTitle] = useState<string>("");
-
   const navigate = useNavigate();
 
-  // Fetch the todos from the API when the component mounts
   useEffect(() => {
-    fetchTodos();
-  }, []);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login"); // Redirect to login if not authenticated
+    } else {
+      fetchTodos(); // Fetch todos if authenticated
+    }
+  }, [navigate]);
 
   // Function to fetch todos from the JSONPlaceholder API
   const fetchTodos = async () => {
     try {
-      // Make a GET request to fetch the todos
       const response = await axios.get(
         "https://jsonplaceholder.typicode.com/todos"
       );
       console.log("Fetched todos:", response.data); // Log the fetched todos
-      // Update the state with the fetched todos (limit to 10 for simplicity)
       setTodos(response.data.slice(0, 10));
     } catch (error) {
       console.error("Error fetching todos:", error);
@@ -39,10 +38,8 @@ const TodoList: React.FC = () => {
 
   // Function to add a new todo to the list
   const addTodo = async () => {
-    // If the newTodoTitle is empty, return early
     if (!newTodoTitle) return;
     try {
-      // Make a POST request to add the new todo
       const response = await axios.post(
         "https://jsonplaceholder.typicode.com/todos",
         {
@@ -50,10 +47,8 @@ const TodoList: React.FC = () => {
           completed: false,
         }
       );
-      console.log("Added todo:", response.data); // Log the newly added todo
-      // Update the state with the new todo added
+      console.log("Added todo:", response.data);
       setTodos([...todos, response.data]);
-      // Reset the newTodoTitle to an empty string
       setNewTodoTitle("");
     } catch (error) {
       console.error("Error adding todo:", error);
@@ -63,15 +58,13 @@ const TodoList: React.FC = () => {
   // Function to update the completion status of a todo
   const updateTodo = async (id: number, completed: boolean) => {
     try {
-      // Make a PUT request to update the todo
       const response = await axios.put(
         `https://jsonplaceholder.typicode.com/todos/${id}`,
         {
           completed,
         }
       );
-      console.log("Updated todo:", response.data); // Log the updated todo
-      // Update the state with the updated todo
+      console.log("Updated todo:", response.data);
       setTodos(todos.map((todo) => (todo.id === id ? response.data : todo)));
     } catch (error) {
       console.error("Error updating todo:", error);
@@ -81,20 +74,13 @@ const TodoList: React.FC = () => {
   // Function to delete a todo from the list
   const deleteTodo = async (id: number) => {
     try {
-      // Make a DELETE request to delete the todo
       await axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`);
-      console.log("Deleted todo with id:", id); // Log the ID of the deleted todo
-      // Update the state by removing the deleted todo
+      console.log("Deleted todo with id:", id);
       setTodos(todos.filter((todo) => todo.id !== id));
     } catch (error) {
       console.error("Error deleting todo:", error);
     }
   };
-
-  // Log the current todos whenever the todos state changes
-  useEffect(() => {
-    console.log("Current todos:", todos);
-  }, [todos]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
@@ -134,12 +120,6 @@ const TodoList: React.FC = () => {
                 onClick={() => deleteTodo(todo.id)}
               >
                 Delete
-              </button>
-              <button
-                className="px-2 py-1 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                onClick={() => navigate(`/todos/${todo.id}`)}
-              >
-                Details
               </button>
             </li>
           ))}

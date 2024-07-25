@@ -7,8 +7,8 @@ import Register from "./component/Register";
 import TodoList from "./component/TodoList";
 import TodoDetail from "./component/TodoDetail";
 import Navbar from "./component/Navbar";
+import ProtectedRoute from "./component/ProtectedRoute"; // Import the ProtectedRoute component
 
-// Define a NotFound component for 404 pages
 const NotFound: React.FC = () => <h2>404 Not Found</h2>;
 
 function App() {
@@ -20,8 +20,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/todos" element={<TodoList />} />
-          <Route path="/todos/:id" element={<TodoDetail />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/todos" element={<TodoList />} />
+            <Route path="/todos/:id" element={<TodoDetail />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
