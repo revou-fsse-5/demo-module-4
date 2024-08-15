@@ -19,6 +19,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
     confirmPassword: "",
   };
 
+  // bisa pake validation schema atau mau pakai regex, reguler expression
+  // minimum validasi email, @
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email address").required("Required"),
     password: Yup.string()
