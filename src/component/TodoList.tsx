@@ -9,9 +9,7 @@ interface Todo {
 }
 
 const TodoList: React.FC = () => {
-  // State to store the list of todos
   const [todos, setTodos] = useState<Todo[]>([]);
-  // State to store the title of the new todo item
   const [newTodoTitle, setNewTodoTitle] = useState<string>("");
 
   // Fetch the todos from the API when the component mounts
