@@ -1,15 +1,25 @@
 import React, { useState } from "react";
 import LoginForm from "./LoginForm";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Add your login logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const { email: storedEmail, password: storedPassword } =
+        JSON.parse(storedUser);
+      if (email === storedEmail && password === storedPassword) {
+        localStorage.setItem("token", "your-auth-token"); // Set a token or flag indicating authenticated
+        navigate("/todos");
+      } else {
+        alert("Invalid credentials");
+      }
+    }
   };
 
   return (

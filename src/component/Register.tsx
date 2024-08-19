@@ -7,10 +7,12 @@ const Register: React.FC = () => {
     password: string;
     confirmPassword: string;
   }) => {
-    // Display form values in an alert
-    alert(
-      `Registration Successful!\n\nEmail: ${values.email}\nPassword: ${values.password}\nConfirm Password: ${values.confirmPassword}`
+    // Save user data in localStorage
+    localStorage.setItem(
+      "user",
+      JSON.stringify({ email: values.email, password: values.password })
     );
+    alert("Registration Successful!");
   };
 
   return (
