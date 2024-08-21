@@ -1,24 +1,37 @@
 import React, { useState } from "react";
 import LoginForm from "./LoginForm";
+import { useAuth } from "../context/AuthContext"; // Import useAuth
 import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const { login } = useAuth(); // Use the login function from context
   const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     const storedUser = localStorage.getItem("user");
+    console.log("Stored User:", storedUser); // Log stored user data
+
     if (storedUser) {
       const { email: storedEmail, password: storedPassword } =
         JSON.parse(storedUser);
+      console.log("Entered Email:", email);
+      console.log("Stored Email:", storedEmail);
+      console.log("Entered Password:", password);
+      console.log("Stored Password:", storedPassword);
+
       if (email === storedEmail && password === storedPassword) {
-        localStorage.setItem("token", "your-auth-token"); // Set a token or flag indicating authenticated
-        navigate("/todos");
+        login(); // Log the user in using the context
+        console.log("Login successful, redirecting...");
+        navigate("/todos"); // Redirect to the todos page
       } else {
         alert("Invalid credentials");
       }
+    } else {
+      alert("No registered user found");
     }
   };
 

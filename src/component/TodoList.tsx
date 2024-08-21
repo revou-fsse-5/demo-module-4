@@ -15,13 +15,8 @@ const TodoList: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login"); // Redirect to login if not authenticated
-    } else {
-      fetchTodos(); // Fetch todos if authenticated
-    }
-  }, [navigate]);
+    fetchTodos();
+  }, []);
 
   // Function to fetch todos from the JSONPlaceholder API
   const fetchTodos = async () => {
@@ -33,12 +28,14 @@ const TodoList: React.FC = () => {
       setTodos(response.data.slice(0, 10));
     } catch (error) {
       console.error("Error fetching todos:", error);
+      navigate("/login"); // Redirect to login on error
     }
   };
 
   // Function to add a new todo to the list
   const addTodo = async () => {
-    if (!newTodoTitle) return;
+    if (!newTodoTitle) return; // Prevent adding an empty todo
+
     try {
       const response = await axios.post(
         "https://jsonplaceholder.typicode.com/todos",

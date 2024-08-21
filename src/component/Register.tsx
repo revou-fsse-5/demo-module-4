@@ -1,18 +1,21 @@
 import React from "react";
 import RegisterForm from "./RegisterForm";
+import { useAuth } from "../context/AuthContext"; // Import useAuth
+import { useNavigate } from "react-router-dom";
 
 const Register: React.FC = () => {
+  const { register } = useAuth(); // Use the register function from context
+  const navigate = useNavigate();
+
   const handleSubmit = (values: {
     email: string;
     password: string;
     confirmPassword: string;
   }) => {
-    // Save user data in localStorage
-    localStorage.setItem(
-      "user",
-      JSON.stringify({ email: values.email, password: values.password })
-    );
+    // Use the register function from context to save user data in localStorage
+    register(values.email, values.password);
     alert("Registration Successful!");
+    navigate("/todos"); // Redirect to the todos page after successful registration
   };
 
   return (
